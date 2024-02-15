@@ -176,13 +176,12 @@ def build_backbone(args):
                     out_indices=tuple(return_interm_indices), \
                 dilation=args.dilation, use_checkpoint=use_checkpoint)
 
-        # freeze some layers
-        if backbone_freeze_keywords is not None:
-            for name, parameter in backbone.named_parameters():
-                for keyword in backbone_freeze_keywords:
-                    if keyword in name:
-                        parameter.requires_grad_(False)
-                        break
+        # freeze backbone
+        if backbone_freeze_keywords:
+            print("freezing backbone")
+            for parameter in backbone.parameters():
+                parameter.requires_grad_(False)
+                
         if "backbone_dir" in args:
             pretrained_dir = args.backbone_dir
             PTDICT = {
