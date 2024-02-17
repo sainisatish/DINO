@@ -186,9 +186,18 @@ def main(args):
         lr_scheduler = torch.optim.lr_scheduler.OneCycleLR(optimizer, max_lr=args.lr, steps_per_epoch=len(data_loader_train), epochs=args.epochs, pct_start=0.2)
     elif args.multi_step_lr:
         lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=args.lr_drop_list)
-    else:
+    else:        
+        # Update the learning rate
+        new_learning_rate = 0.0001
+        print("===================================================")
+        for param_group in optimizer.param_groups:
+            param_group['lr'] = new_learning_rate
+            
         lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, args.lr_drop)
-
+        
+        print("===================================================")
+        for param_group in optimizer.param_groups:
+            print(param_group['lr'])
 
     if args.dataset_file == "coco_panoptic":
         # We also evaluate AP during panoptic training, on original coco DS
