@@ -228,12 +228,13 @@ def main(args):
                 param_group['lr'] = new_learning_rate
             
             lr_scheduler.load_state_dict(checkpoint['lr_scheduler'])
-
+            for param_group in optimizer.param_groups:
+                print(param_group['lr']) 
             args.start_epoch = checkpoint['epoch'] + 1
 
     if (not args.resume) and args.pretrain_model_path:
         checkpoint = torch.load(args.pretrain_model_path, map_location='cpu')['model']
-        
+        print("learning rate changed due to chkpt loading")
         from collections import OrderedDict
         _ignorekeywordlist = args.finetune_ignore if args.finetune_ignore else []
         ignorelist = []
